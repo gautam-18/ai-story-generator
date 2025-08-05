@@ -31,6 +31,7 @@ st.markdown("""
         border-radius: 10px;
         border-left: 4px solid #667eea;
         margin: 10px 0;
+        color: #000;
     }
     .parameter-info {
         background-color: #e3f2fd;

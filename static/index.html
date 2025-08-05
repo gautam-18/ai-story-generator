@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Story Generator</title>
+    <style>
+      body {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
+      .container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        padding: 32px 24px 24px 24px;
+      }
+      h1 {
+        text-align: center;
+        font-size: 2.2rem;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 24px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      label {
+        font-weight: 500;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      input[type="password"],
+      textarea,
+      select {
+        padding: 8px 10px;
+        border: 1px solid #bdbdbd;
+        border-radius: 6px;
+        font-size: 1rem;
+        margin-top: 2px;
+      }
+      textarea {
+        min-height: 70px;
+        resize: vertical;
+      }
+      button[type="submit"] {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+      }
+      button[disabled] {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      .error {
+        background: #ffeaea;
+        color: #c00;
+        border-left: 4px solid #c00;
+        padding: 12px;
+        border-radius: 6px;
+        margin: 18px 0;
+      }
+      .story-container {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 24px 0 0 0;
+      }
+      .story-container pre {
+        white-space: pre-wrap;
+        font-family: inherit;
+        font-size: 1.08rem;
+        color: #222;
+      }
+      footer {
+        text-align: center;
+        margin-top: 32px;
+        color: #888;
+        font-size: 0.98rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📚 AI Story Generator</h1>
+      <form id="story-form">
+        <label>
+          Prompt:
+          <textarea
+            id="prompt"
+            required
+            placeholder="A robot discovers emotions and falls in love with a human..."
+          ></textarea>
+        </label>
+        <label>
+          Genre:
+          <select id="genre">
+            <option>Fantasy</option>
+            <option>Sci-Fi</option>
+            <option>Romance</option>
+            <option>Mystery</option>
+            <option>Horror</option>
+            <option>Adventure</option>
+            <option>Literary Fiction</option>
+            <option>Comedy</option>
+          </select>
+        </label>
+        <label>
+          Tone:
+          <select id="tone">
+            <option>Serious</option>
+            <option>Humorous</option>
+            <option>Dark</option>
+            <option>Uplifting</option>
+            <option>Mysterious</option>
+            <option>Dramatic</option>
+          </select>
+        </label>
+        <label>
+          Length:
+          <select id="length">
+            <option>Short</option>
+            <option>Medium</option>
+            <option>Long</option>
+          </select>
+        </label>
+        <button type="submit" id="submit-btn">Generate Story</button>
+      </form>
+      <div id="error" class="error" style="display: none"></div>
+      <div id="story-container" class="story-container" style="display: none">
+        <h2>Your Generated Story</h2>
+        <pre id="story"></pre>
+      </div>
+      <footer>
+        <p>Made with ❤️ using Flask & OpenAI</p>
+      </footer>
+    </div>
+    <script>
+      const form = document.getElementById("story-form");
+      const errorDiv = document.getElementById("error");
+      const storyContainer = document.getElementById("story-container");
+      const storyPre = document.getElementById("story");
+      const submitBtn = document.getElementById("submit-btn");
+
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        errorDiv.style.display = "none";
+        storyContainer.style.display = "none";
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Generating...";
+        const prompt = document.getElementById("prompt").value;
+        const genre = document.getElementById("genre").value;
+        const tone = document.getElementById("tone").value;
+        const length = document.getElementById("length").value;
+        try {
+          const res = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt, genre, tone, length }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            errorDiv.textContent = data.error || "Error generating story.";
+            errorDiv.style.display = "block";
+          } else {
+            storyPre.textContent = data.story;
+            storyContainer.style.display = "block";
+          }
+        } catch (err) {
+          errorDiv.textContent = "Network error.";
+          errorDiv.style.display = "block";
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Generate Story";
+      };
+    </script>
+  </body>
+</html>
