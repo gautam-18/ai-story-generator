@@ -147,9 +147,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Check Python version (3.7+ required)
 - Try running with `streamlit run app.py --server.port 8502`
 
-## 📞 Support
-
-For support, email student@domain.com or create an issue in the GitHub repository.
 
 ## 🙏 Acknowledgments
 
@@ -159,4 +156,4 @@ For support, email student@domain.com or create an issue in the GitHub repositor
 
 ---
 
-**Built with ❤️ by [Your Name] for the Generative AI Project Course**
+**Built with ❤️ by Gautam Arora for the Generative AI Project Course**
